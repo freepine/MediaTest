@@ -1,21 +1,21 @@
-#include "LogTestResult.h"
 #include "TestHarness.h"
+#include <utils/String8.h>
+#include <media/mediaplayer.h>
 
-int main()
-{
-        LogTestResult tr;
-        TestRegistry::runAllTests(tr);
-        return tr.getFailureCount();
-}
+const char* SDCARD_LOCATION = "/mnt/sdcard/";
+const char* WMA_TESTFILE = "No_Woman_No_Cry_128K.wma";
 
-TEST( MediaPlayer, helloword)
-{
-    int r = 0;
-    CHECK ( 0 == r );
-}
+using namespace android;
 
-TEST( MediaPlayer, helloword_fail)
+TEST( MediaPlayer, playWMA)
 {
-    int r = 0;
-    CHECK ( 1 == r );
+    String8 fileName(SDCARD_LOCATION);
+    fileName += WMA_TESTFILE;
+    sp<MediaPlayer> mediaplayer = new MediaPlayer;
+    mediaplayer->setDataSource(fileName.string(), NULL);
+    status_t retCode = mediaplayer->prepare();
+    CHECK(OK == retCode);
+    retCode = mediaplayer->start();
+    CHECK(OK == retCode);
+    mediaplayer.clear();
 }
