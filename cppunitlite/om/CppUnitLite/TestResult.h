@@ -23,6 +23,7 @@ public:
 	virtual void	addFailure (const Failure& failure);
 	virtual void	testsEnded ();
 
+        int             getFailureCount() {return failureCount; }
 private:
 	int				failureCount;
 };
