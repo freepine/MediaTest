@@ -121,13 +121,13 @@ struct cpputest_pair
 
 //////// SetPlugin
 
-static int index;
+static int plugin_index;
 static cpputest_pair setlist[SetPointerPlugin::MAX_SET];
 
 SetPointerPlugin::SetPointerPlugin(const SimpleString& name_) :
 	TestPlugin(name_)
 {
-	index = 0;
+	plugin_index = 0;
 }
 
 SetPointerPlugin::~SetPointerPlugin()
@@ -136,19 +136,19 @@ SetPointerPlugin::~SetPointerPlugin()
 
 void CppUTestStore(void**function, void*value)
 {
-	if (index >= SetPointerPlugin::MAX_SET) {
+	if (plugin_index >= SetPointerPlugin::MAX_SET) {
 		FAIL("Maximum number of function pointers installed!");
 	}
-	setlist[index].orig_value = value;
-	setlist[index].orig = function;
-	index++;
+	setlist[plugin_index].orig_value = value;
+	setlist[plugin_index].orig = function;
+	plugin_index++;
 }
 
 void SetPointerPlugin::postTestAction(Utest& test, TestResult& result)
 {
-	for (int i = index - 1; i >= 0; i--)
+	for (int i = plugin_index - 1; i >= 0; i--)
 		*((void**) setlist[i].orig) = setlist[i].orig_value;
-	index = 0;
+	plugin_index = 0;
 }
 
 //////// NullPlugin
