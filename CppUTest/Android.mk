@@ -18,11 +18,11 @@ LOCAL_SRC_FILES:= \
     src/CppUTest/Utest.cpp \
     src/CppUTest/Extensions/OrderedTest.cpp \
     src/CppUTest/Extensions/SimpleStringFromStdint.cpp \
-    src/CppUTest/Nulls/NullJUnitTestOutput.cpp \
     src/Platforms/Gcc/UtestPlatform.cpp
 
 #Freepine: omit std::string to fix compilation error.
 #LOCAL_SRC_FILES += src/CppUTest/Extensions/SimpleStringExtensions.cpp
+#LOCAL_SRC_FILES += src/CppUTest/Nulls/NullJUnitTestOutput.cpp
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include 
@@ -36,4 +36,4 @@ LOCAL_MODULE:= libCppUTest
 #LOCAL_MODULE_TAGS := optional
 LOCAL_PRELINK_MODULE := false
 
-include $(BUILD_STATIC_LIBRARY)
+include $(BUILD_SHARED_LIBRARY)
