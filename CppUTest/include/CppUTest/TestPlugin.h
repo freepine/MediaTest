@@ -39,6 +39,8 @@
 class Utest;
 class TestResult;
 
+#include "CppUTest/SimpleString.h"
+
 class TestPlugin
 {
 public:

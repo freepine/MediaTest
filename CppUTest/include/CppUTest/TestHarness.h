@@ -78,5 +78,9 @@
 #include "TestResult.h"
 #include "Failure.h"
 #include "TestPlugin.h"
+
+#ifndef DISABLE_MEMORYLEAK_PLUGIN
 #include "MemoryLeakWarningPlugin.h"
+#endif
+
 #endif

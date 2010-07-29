@@ -6,11 +6,7 @@ LOCAL_SRC_FILES:= \
     src/CppUTest/CommandLineTestRunner.cpp \
     src/CppUTest/Failure.cpp \
     src/CppUTest/JUnitTestOutput.cpp \
-    src/CppUTest/MemoryLeakAllocator.cpp \
-    src/CppUTest/MemoryLeakDetector.cpp \
-    src/CppUTest/MemoryLeakWarningPlugin.cpp \
     src/CppUTest/SimpleString.cpp \
-    src/CppUTest/TestHarness_c.cpp \
     src/CppUTest/TestOutput.cpp \
     src/CppUTest/TestPlugin.cpp \
     src/CppUTest/TestRegistry.cpp \
@@ -32,8 +28,22 @@ LOCAL_SHARED_LIBRARIES := \
     libcutils \
     libutils
 
+LOCAL_CFLAGS += --use-cxa-atexit
+
+ifneq ($(BUILD_WITH_MEMORY_LEAK_DETECTION),true)
+    LOCAL_CFLAGS += -DDISABLE_MEMORYLEAK_PLUGIN \
+                    -DUT_NEW_MACROS_DISABLED \
+                    -DUT_NEW_OVERRIDES_DISABLED \
+                    -DUT_MALLOC_MACROS_DISABLED
+else
+    LOCAL_SRC_FILES += src/CppUTest/MemoryLeakAllocator.cpp \
+                       src/CppUTest/MemoryLeakDetector.cpp \
+                       src/CppUTest/MemoryLeakWarningPlugin.cpp \
+                       src/CppUTest/TestHarness_c.cpp
+endif
+
 LOCAL_MODULE:= libCppUTest
 #LOCAL_MODULE_TAGS := optional
-LOCAL_PRELINK_MODULE := false
+#LOCAL_PRELINK_MODULE := false
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)

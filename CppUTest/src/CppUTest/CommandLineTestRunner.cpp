@@ -53,18 +53,21 @@ int CommandLineTestRunner::RunAllTests(int ac, const char** av)
 	int result = 0;
 	ConsoleTestOutput output;
 
+#ifndef DISABLE_MEMORYLEAK_PLUGIN
 	MemoryLeakWarningPlugin memLeakWarn(DEF_PLUGIN_MEM_LEAK);
 	//memLeakWarn.disable();
 	TestRegistry::getCurrentRegistry()->installPlugin(&memLeakWarn);
-
+#endif
 	{
 		CommandLineTestRunner runner(ac, av, &output);
 		result = runner.runAllTestsMain();
 	}
 
+#ifndef DISABLE_MEMORYLEAK_PLUGIN
 	if (result == 0) {
 		output << memLeakWarn.FinalReport(0);
 	}
+#endif
 	return result;
 }
 

@@ -1,3 +1,7 @@
+#define LOG_NDEBUG 0
+#define LOG_TAG "MediaPlayerTest"
+#include <utils/Log.h>
+
 #include <utils/String8.h>
 #include <media/mediaplayer.h>
 #include "CppUTest/TestHarness.h"
@@ -21,24 +25,28 @@ TEST_GROUP(MediaPlayer)
 
     void teardown()
     {
+        mediaplayer->reset();
+        mediaplayer->disconnect();
         mediaplayer.clear();
+    }
+
+    void testPlay()
+    {
+        status_t retCode = mediaplayer->prepare();
+        CHECK(OK == retCode);
+        retCode = mediaplayer->start();
+        CHECK(OK == retCode);
     }
 };
 
-TEST(MediaPlayer, playWMA)
+TEST(MediaPlayer, play)
 {
-    status_t retCode = mediaplayer->prepare();
-    CHECK(OK == retCode);
-    retCode = mediaplayer->start();
-    CHECK(OK == retCode);
+    testPlay();
 }
 
 TEST(MediaPlayer, seek)
 {
-    status_t retCode = mediaplayer->prepare();
-    CHECK(OK == retCode);
-    retCode = mediaplayer->start();
-    CHECK(OK == retCode);
-    retCode = mediaplayer->seekTo(30*1000);
+    testPlay();
+    status_t retCode = mediaplayer->seekTo(30*1000);
     CHECK(OK == retCode);
 }
