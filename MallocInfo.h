@@ -16,7 +16,7 @@ public:
     char* getLeakMessage();
     
 private:
-    void dumpProcessMemory(bool isPostTest);
+    void dumpProcessMemory(size_t &count, size_t &totalMemory);
     bool copyFile(const char* sourceFile, const char* destFile);
 
     size_t mPreCount;

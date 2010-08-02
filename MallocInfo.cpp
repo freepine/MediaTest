@@ -35,7 +35,7 @@ void MallocInfo::dumpPreTestMemory()
 {
     mMemoryDumpId++;
     snprintf(mDumpFileName, MAX_FILE_NAME_SIZE, "%s/memory_dump_%d", CPPUTEST_MEMORYDUMP_DIR, mMemoryDumpId);
-    dumpProcessMemory(false);
+    dumpProcessMemory(mPreCount, mPreTotalMemory);
     mPostCount = 0;
     mPostTotalMemory = 0;
 }
@@ -46,7 +46,15 @@ void MallocInfo::dumpPostTestMemory()
     strcpy(mapsFile, mDumpFileName);
     strcat(mapsFile, ".maps");
     copyFile("/proc/self/maps", mapsFile);
-    dumpProcessMemory(true);
+    if(strlen(mDumpFileName) >= MAX_FILE_NAME_SIZE-5)
+    {
+        LOGE("mDumpFileName exceeds size limit: %s", mDumpFileName);
+    }
+    else
+    {
+        strcat(mDumpFileName, ".pst");
+    }
+    dumpProcessMemory(mPostCount, mPostTotalMemory);
 }
 
 bool MallocInfo::hasMemoryLeak() const
@@ -66,7 +74,7 @@ char* MallocInfo::getLeakMessage()
 }
 
 //Mostly copied from MediaPlayerService::memStatus()
-void MallocInfo::dumpProcessMemory(bool isPostTest)
+void MallocInfo::dumpProcessMemory(size_t &count, size_t &totalMemory)
 {
     const size_t SIZE = 256;
     char buffer[SIZE];
@@ -81,14 +89,12 @@ void MallocInfo::dumpProcessMemory(bool isPostTest)
     size_t overallSize = 0;
     size_t infoSize = 0;
     size_t backtraceSize = 0;
-    size_t count = 0;
-    size_t totalMemory = 0;
+    count = 0;
+    totalMemory = 0;
     get_malloc_leak_info(&info, &overallSize, &infoSize, &totalMemory, &backtraceSize);
     LOGI("returned from get_malloc_leak_info, info=0x%x, overallSize=%d, infoSize=%d, totalMemory=%d, backtraceSize=%d", (int)info, overallSize, infoSize, totalMemory, backtraceSize);
     if (info)
     {
-        if(isPostTest)
-            strcat(mDumpFileName, ".pst");
         FILE *f = fopen(mDumpFileName, "w+");
         if(f == NULL)
         {
@@ -165,17 +171,6 @@ void MallocInfo::dumpProcessMemory(bool isPostTest)
         fclose(f);
 
         free_malloc_leak_info(info);
-    }
-
-    if(isPostTest)
-    {
-        mPostCount = count;
-        mPostTotalMemory = totalMemory;
-    }
-    else
-    {
-        mPreCount = count;
-        mPreTotalMemory = totalMemory;
     }
 }
 
