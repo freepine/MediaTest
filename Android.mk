@@ -7,6 +7,7 @@ LOCAL_SRC_FILES:= \
     LogTestPlugin.cpp \
     MemoryLeakPlugin.cpp \
     MallocInfo.cpp \
+    TestingMediaPlayerListener.cpp \
     MediaPlayerTest.cpp
 
 LOCAL_C_INCLUDES:= \

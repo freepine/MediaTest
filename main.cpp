@@ -17,12 +17,12 @@ int main(int ac, char** av)
     LOGV("entering main");
     sp<ProcessState> proc = ProcessState::self();
     proc->startThreadPool();
-    LOGV("install logger plugin.");
-    LogTestPlugin logPlugin;
-    TestRegistry::getCurrentRegistry()->installPlugin(&logPlugin);
     LOGV("install memory leak plugin.");
     MemoryLeakPlugin memoryLeakPlugin;
     TestRegistry::getCurrentRegistry()->installPlugin(&memoryLeakPlugin);
+    LOGV("install logger plugin.");
+    LogTestPlugin logPlugin;
+    TestRegistry::getCurrentRegistry()->installPlugin(&logPlugin);
     LOGV("before run all tests.");
     int result = CommandLineTestRunner::RunAllTests(ac, av);
     LOGV("after run all tests, reset plugin");
