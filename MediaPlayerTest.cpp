@@ -7,8 +7,13 @@
 #include "TestingMediaPlayerListener.h"
 #include "CppUTest/TestHarness.h"
 
-const char* SDCARD_LOCATION = "/mnt/sdcard/";
-const char* WMA_TESTFILE = "Beethoven_2.wma";
+//#define TESTFILE_NAME "/mnt/sdcard/bugs_230.ismv"
+//#define TESTFILE_NAME "/mnt/sdcard/media_api/video/bugs.wmv"
+//#define TESTFILE_NAME "http://75.17.48.204:10088/yslau/stress_media/bugs.wmv"
+//#define TESTFILE_NAME "/mnt/sdcard/avi/flyby-xvid-default.avi"
+//#define TESTFILE_NAME "/mnt/sdcard/media_api/music/MP3_256kbps_2ch.mp3"
+//#define TESTFILE_NAME "/mnt/sdcard/media_api/music/test_amr_ietf.amr"
+#define TESTFILE_NAME "/mnt/sdcard/bugs_230_piff4.ismv"
 
 const int MAXIMUM_RESUME_DELAY_IN_MSEC = 2*1000;
 
@@ -22,13 +27,12 @@ TEST_GROUP(MediaPlayer)
 
     void setup()
     {
+        LOGV("setup");
         durationInMsec = 0;
-        String8 fileName(SDCARD_LOCATION);
-        fileName += WMA_TESTFILE;
         mediaplayer = new MediaPlayer;
         listener = new TestingMediaPlayerListener;
         mediaplayer->setListener(listener);
-        mediaplayer->setDataSource(fileName.string(), NULL);
+        mediaplayer->setDataSource(TESTFILE_NAME, NULL);
     }
 
     void teardown()
@@ -38,6 +42,7 @@ TEST_GROUP(MediaPlayer)
         mediaplayer->disconnect();
         mediaplayer.clear();
         listener.clear();
+        LOGV("exit teardown");
     }
 
     void testPlay()
@@ -98,6 +103,38 @@ TEST(MediaPlayer, PrepareAsync)
     }
     FAIL("Prepare didn't complete after 2 seconds!");
 }
+
+TEST(MediaPlayer, Prepared)
+{
+    status_t retCode = mediaplayer->prepare();
+    CHECK(listener->isPrepared());
+}
+
+TEST(MediaPlayer, PrepareAsyncResetOnce)
+{
+    status_t retCode = mediaplayer->prepareAsync();
+    CHECK(OK == retCode);
+    usleep(50*1000);
+}
+
+/*
+TEST(MediaPlayer, PrepareAsyncResetRepeatedly)
+{
+    const int LOOPNUM = 400;
+    const int SLEEP_TIME_IN_MS = 2;
+    teardown();
+    for(int i=0; i<LOOPNUM; i++)
+    {
+        setup();
+        status_t retCode = mediaplayer->prepareAsync();
+        CHECK(OK == retCode);
+        usleep(i*SLEEP_TIME_IN_MS*1000);
+        mediaplayer->seekTo(0);
+        teardown();
+    }
+    setup();
+}
+*/
 
 TEST(MediaPlayer, play)
 {

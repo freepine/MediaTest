@@ -42,8 +42,8 @@ else
                        src/CppUTest/TestHarness_c.cpp
 endif
 
+LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE:= libCppUTest
-#LOCAL_MODULE_TAGS := optional
 #LOCAL_PRELINK_MODULE := false
 
 include $(BUILD_STATIC_LIBRARY)

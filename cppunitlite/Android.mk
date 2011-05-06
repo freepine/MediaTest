@@ -13,8 +13,8 @@ LOCAL_SHARED_LIBRARIES := \
     libcutils \
     libutils
 
+LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE:= libcppunitlite
-#LOCAL_MODULE_TAGS := optional
 LOCAL_PRELINK_MODULE := false
 
 include $(BUILD_SHARED_LIBRARY)
@@ -32,7 +32,9 @@ LOCAL_C_INCLUDES:= \
 LOCAL_SHARED_LIBRARIES := \
     libcppunitlite \
     libmedia \
+    libbinder \
     libutils
 
+LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE:= mediaplayer_unittest
 include $(BUILD_EXECUTABLE)
