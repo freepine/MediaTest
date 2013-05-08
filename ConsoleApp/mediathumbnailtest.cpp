@@ -32,10 +32,10 @@ using namespace android;
 
 int main(int argc, char** argv)
 {
-    LOGI("entering main..."); 
+    ALOGI("entering main..."); 
     if(argc <= 1)
     {
-        LOGI("Please specify the test content: ./mediatest <content_url>");
+        ALOGI("Please specify the test content: ./mediatest <content_url>");
         return 1;
     }
 
@@ -43,13 +43,13 @@ int main(int argc, char** argv)
     proc->startThreadPool();
     sp<MediaMetadataRetriever> retriever = new MediaMetadataRetriever;
 
-    LOGI("set datasource: %s", argv[1]);
+    ALOGI("set datasource: %s", argv[1]);
     retriever->setDataSource(argv[1], NULL);
-    LOGI("get frame.");
+    ALOGI("get frame.");
     retriever->getFrameAtTime(-1, 0);
-    LOGI("done.");
+    ALOGI("done.");
     retriever.clear();
-    LOGI("quiting...");
+    ALOGI("quiting...");
     IPCThreadState::self()->stopProcess();
 }
 
