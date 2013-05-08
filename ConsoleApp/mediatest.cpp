@@ -23,22 +23,23 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <fcntl.h>
 
 #include <media/mediaplayer.h>
 #include <binder/IPCThreadState.h>
 #include <binder/ProcessState.h>
-#include <surfaceflinger/SurfaceComposerClient.h>
-#include <surfaceflinger/Surface.h>
-#include <surfaceflinger/ISurfaceComposer.h>
+#include <gui/SurfaceComposerClient.h>
+#include <gui/Surface.h>
+#include <gui/ISurfaceComposer.h>
 
 using namespace android;
 
 int main(int argc, char** argv)
 {
-    LOGI("entering main..."); 
+    ALOGI("entering main..."); 
     if(argc <= 1)
     {
-        LOGI("Please specify the test content: ./mediatest <content_url>");
+        ALOGI("Please specify the test content: ./mediatest <content_url>");
         return 1;
     }
 
@@ -46,46 +47,44 @@ int main(int argc, char** argv)
     proc->startThreadPool();
     sp<MediaPlayer> mediaplayer = new MediaPlayer;
 
-    LOGI("set datasource: %s", argv[1]);
-    mediaplayer->setDataSource(argv[1], NULL);
-    LOGI("create SurfaceComposerClient");
+    ALOGI("set datasource: %s", argv[1]);
+    int inFd = open(argv[1], O_RDONLY);
+    mediaplayer->setDataSource(inFd, 0, 0x7FFFFFFF);
+    ALOGI("create SurfaceComposerClient");
     int pid = getpid();
     int nState = 0;
     sp<SurfaceComposerClient> videoClient = new SurfaceComposerClient;
 
-    LOGI("create video surface");
-    sp<SurfaceControl> videoSurface(videoClient->createSurface(0,
-            videoClient->getDisplayWidth(0), videoClient->getDisplayHeight(0),
-            PIXEL_FORMAT_OPAQUE, ISurfaceComposer::eFXSurfaceNormal));
+    ALOGI("create video surface");
+    sp<SurfaceControl> videoSurface(videoClient->createSurface(String8("video"),
+            480, 320,
+            PIXEL_FORMAT_OPAQUE));
     videoClient->openGlobalTransaction();
     nState = videoSurface->setLayer(INT_MAX);
-    LOGI("videosurface->setLayer, %d", nState);
+    ALOGI("videosurface->setLayer, %d", nState);
     nState = videoSurface->show();
-    LOGI("videosurface->show, %d", nState);
+    ALOGI("videosurface->show, %d", nState);
     videoClient->closeGlobalTransaction();
 
-    LOGI("set video surface to player");
+    ALOGI("set video surface to player");
     mediaplayer->setVideoSurfaceTexture(videoSurface->getSurface()->getISurfaceTexture());
 
-    LOGI("prepare...");
+    ALOGI("prepare...");
     status_t retCode = mediaplayer->prepare();
     if(retCode < 0)
     {
-        LOGE("prepare failed: %d\n", retCode);
+        ALOGE("prepare failed: %d\n", retCode);
         IPCThreadState::self()->stopProcess();
         return -1;
     };
 
-    LOGI("start playback.");
+    ALOGI("start playback.");
     mediaplayer->start();
-    for(int i=0; i<10; i++)
-    {
-        sleep(1);
-        LOGI("playing, i=%d\n", i);
-    }
-    LOGI("release player.");
+    sleep(70);
+    ALOGI("release player.");
     mediaplayer.clear();
-    LOGI("quiting...");
+    ALOGI("quiting...");
+    close(inFd);
     IPCThreadState::self()->stopProcess();
 }
 

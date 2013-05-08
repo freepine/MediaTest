@@ -23,7 +23,7 @@ MallocInfo::MallocInfo()
 {
     if (mkdir(CPPUTEST_MEMORYDUMP_DIR, 0777) < 0)
     {
-        LOGW("mkdir %s failed: %d", CPPUTEST_MEMORYDUMP_DIR, errno);
+        ALOGW("mkdir %s failed: %d", CPPUTEST_MEMORYDUMP_DIR, errno);
     }
 }
 
@@ -48,7 +48,7 @@ void MallocInfo::dumpPostTestMemory()
     copyFile("/proc/self/maps", mapsFile);
     if(strlen(mDumpFileName) >= MAX_FILE_NAME_SIZE-5)
     {
-        LOGE("mDumpFileName exceeds size limit: %s", mDumpFileName);
+        ALOGE("mDumpFileName exceeds size limit: %s", mDumpFileName);
     }
     else
     {
@@ -59,7 +59,7 @@ void MallocInfo::dumpPostTestMemory()
 
 bool MallocInfo::hasMemoryLeak() const
 {
-    LOGI("MallocInfo::hasMemoryLeak, mPreCount=%d, mPostCount=%d, mPreTotalMemory=%d, mPostTotalMemory=%d", 
+    ALOGI("MallocInfo::hasMemoryLeak, mPreCount=%d, mPostCount=%d, mPreTotalMemory=%d, mPostTotalMemory=%d", 
                mPreCount, mPostCount, mPreTotalMemory, mPostTotalMemory);
     return ((mPostCount != mPreCount) || (mPreTotalMemory != mPostTotalMemory));
 }
@@ -92,13 +92,13 @@ void MallocInfo::dumpProcessMemory(size_t &count, size_t &totalMemory)
     count = 0;
     totalMemory = 0;
     get_malloc_leak_info(&info, &overallSize, &infoSize, &totalMemory, &backtraceSize);
-    LOGI("returned from get_malloc_leak_info, info=0x%x, overallSize=%d, infoSize=%d, totalMemory=%d, backtraceSize=%d", (int)info, overallSize, infoSize, totalMemory, backtraceSize);
+    ALOGI("returned from get_malloc_leak_info, info=0x%x, overallSize=%d, infoSize=%d, totalMemory=%d, backtraceSize=%d", (int)info, overallSize, infoSize, totalMemory, backtraceSize);
     if (info)
     {
         FILE *f = fopen(mDumpFileName, "w+");
         if(f == NULL)
         {
-            LOGE("Open file failed: %s!", mDumpFileName);
+            ALOGE("Open file failed: %s!", mDumpFileName);
             free_malloc_leak_info(info);
             return;
         }
@@ -180,13 +180,13 @@ bool MallocInfo::copyFile(const char* sourceFile, const char* destFile)
     FILE* src = fopen(sourceFile, "r");
     if(src == NULL)
     {
-        LOGE("Open source file failed: %s!", sourceFile);
+        ALOGE("Open source file failed: %s!", sourceFile);
         return false;
     }
     FILE* dest = fopen(destFile, "w+");
     if(dest == NULL)
     {
-        LOGE("Open dest file failed: %s!", destFile);
+        ALOGE("Open dest file failed: %s!", destFile);
         fclose(src);
         return false;
     }
@@ -201,7 +201,7 @@ bool MallocInfo::copyFile(const char* sourceFile, const char* destFile)
         }
         else
         {
-            LOGE("Read error, readNum=%d, errno=%d", readNum, errno);
+            ALOGE("Read error, readNum=%d, errno=%d", readNum, errno);
             break;
         }
     }

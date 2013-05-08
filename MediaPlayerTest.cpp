@@ -27,7 +27,7 @@ TEST_GROUP(MediaPlayer)
 
     void setup()
     {
-        LOGV("setup");
+        ALOGV("setup");
         durationInMsec = 0;
         mediaplayer = new MediaPlayer;
         listener = new TestingMediaPlayerListener;
@@ -42,7 +42,7 @@ TEST_GROUP(MediaPlayer)
         mediaplayer->disconnect();
         mediaplayer.clear();
         listener.clear();
-        LOGV("exit teardown");
+        ALOGV("exit teardown");
     }
 
     void testPlay()
@@ -50,7 +50,7 @@ TEST_GROUP(MediaPlayer)
         status_t retCode = mediaplayer->prepare();
         CHECK(OK == retCode);
         retCode = mediaplayer->getDuration(&durationInMsec);
-        LOGV("Track duration: %d", durationInMsec);
+        ALOGV("Track duration: %d", durationInMsec);
         CHECK(OK == retCode);
         retCode = mediaplayer->start();
         CHECK(OK == retCode);
@@ -59,10 +59,10 @@ TEST_GROUP(MediaPlayer)
     void testSeek(int seekPosition)
     {
         const int SEEK_MAXIMUM_TOLERATION_IN_MSEC = 2*1000;
-        LOGV("seek to: %d", seekPosition);
+        ALOGV("seek to: %d", seekPosition);
         if(seekPosition > durationInMsec)
         {
-            LOGW("Seek beyond clip duration, durationInMsec=%d", durationInMsec);
+            ALOGW("Seek beyond clip duration, durationInMsec=%d", durationInMsec);
         }
         status_t retCode = mediaplayer->seekTo(seekPosition);
         CHECK(OK == retCode);
@@ -71,7 +71,7 @@ TEST_GROUP(MediaPlayer)
             if(listener->isSeekComplete())
             {
                 int positionInMsec = getPosition();
-                LOGV("after seek, current position = %d", positionInMsec);
+                ALOGV("after seek, current position = %d", positionInMsec);
                 CHECK(positionInMsec + SEEK_MAXIMUM_TOLERATION_IN_MSEC > seekPosition);
                 CHECK(positionInMsec < SEEK_MAXIMUM_TOLERATION_IN_MSEC + seekPosition);
                 return;
@@ -86,7 +86,7 @@ TEST_GROUP(MediaPlayer)
         int positionInMsec = 0;
         status_t retCode = mediaplayer->getCurrentPosition(&positionInMsec);
         CHECK(OK == retCode);
-        LOGV("current position is %d", positionInMsec);
+        ALOGV("current position is %d", positionInMsec);
         return positionInMsec;
     }
 };

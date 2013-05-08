@@ -3,13 +3,15 @@
 
 #include <media/mediaplayer.h>
 
+class android::Parcel;
+
 class TestingMediaPlayerListener: public android::MediaPlayerListener
 {
 public:
     TestingMediaPlayerListener();
     ~TestingMediaPlayerListener();
 
-    virtual void notify(int msg, int ext1, int ext2);
+    virtual void notify(int msg, int ext1, int ext2, const android::Parcel *obj);
 
     inline bool isPrepared() const {return mPrepared; }
     inline bool isSeekComplete() const {return mSeekComplete; }

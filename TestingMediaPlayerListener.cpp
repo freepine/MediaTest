@@ -2,6 +2,7 @@
 #define LOG_TAG "TestingMediaPlayerListener"
 #include <utils/Log.h>
 #include "TestingMediaPlayerListener.h"
+#include <binder/Parcel.h>
 
 using namespace android;
 
@@ -14,9 +15,9 @@ TestingMediaPlayerListener::~TestingMediaPlayerListener()
 {
 }
 
-void TestingMediaPlayerListener::notify(int msg, int ext1, int ext2)
+void TestingMediaPlayerListener::notify(int msg, int ext1, int ext2, const Parcel *obj)
 {
-    LOGV("TestingMediaPlayerListener::notify, msg=%d, ext1=%d, ext2=%d", msg, ext1, ext2);
+    ALOGV("TestingMediaPlayerListener::notify, msg=%d, ext1=%d, ext2=%d", msg, ext1, ext2);
     switch(msg)
     {
         case MEDIA_PREPARED:

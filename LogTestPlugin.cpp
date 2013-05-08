@@ -13,11 +13,11 @@ LogTestPlugin::LogTestPlugin() : TestPlugin("AndroidLog")
 
 void LogTestPlugin::preTestAction(Utest& test, TestResult& testresult)
 {
-    LOGV("Before running %s::%s", test.getGroup().asCharString(), test.getName().asCharString());
+    ALOGV("Before running %s::%s", test.getGroup().asCharString(), test.getName().asCharString());
 }
 
 void LogTestPlugin::postTestAction(Utest& test, TestResult& testresult)
 {
-    LOGV("After running %s::%s, fail count=%d", test.getGroup().asCharString(), test.getName().asCharString(), testresult.getFailureCount());
+    ALOGV("After running %s::%s, fail count=%d", test.getGroup().asCharString(), test.getName().asCharString(), testresult.getFailureCount());
 }
 
