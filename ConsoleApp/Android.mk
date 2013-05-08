@@ -2,14 +2,14 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:= \
-    mediatest.cpp 
+    mediatest.cpp
 
 LOCAL_SHARED_LIBRARIES := \
     libmedia \
     libc \
     libcutils \
     libbinder \
-    libsurfaceflinger_client \
+    libgui \
     libutils
 
 LOCAL_MODULE_TAGS := optional

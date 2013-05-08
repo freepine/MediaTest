@@ -54,16 +54,18 @@ int main(int argc, char** argv)
     sp<SurfaceComposerClient> videoClient = new SurfaceComposerClient;
 
     LOGI("create video surface");
-    sp<SurfaceControl> videoSurface(videoClient->createSurface(pid, 0, 176, 144, PIXEL_FORMAT_OPAQUE, ISurfaceComposer::eFXSurfaceNormal|ISurfaceComposer::ePushBuffers));
-    videoClient->openTransaction();
+    sp<SurfaceControl> videoSurface(videoClient->createSurface(0,
+            videoClient->getDisplayWidth(0), videoClient->getDisplayHeight(0),
+            PIXEL_FORMAT_OPAQUE, ISurfaceComposer::eFXSurfaceNormal));
+    videoClient->openGlobalTransaction();
     nState = videoSurface->setLayer(INT_MAX);
     LOGI("videosurface->setLayer, %d", nState);
     nState = videoSurface->show();
     LOGI("videosurface->show, %d", nState);
-    videoClient->closeTransaction();
+    videoClient->closeGlobalTransaction();
 
     LOGI("set video surface to player");
-    mediaplayer->setVideoSurface(videoSurface->getSurface());
+    mediaplayer->setVideoSurfaceTexture(videoSurface->getSurface()->getISurfaceTexture());
 
     LOGI("prepare...");
     status_t retCode = mediaplayer->prepare();
