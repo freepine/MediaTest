@@ -67,7 +67,7 @@ int main(int argc, char** argv)
     videoClient->closeGlobalTransaction();
 
     ALOGI("set video surface to player");
-    mediaplayer->setVideoSurfaceTexture(videoSurface->getSurface()->getISurfaceTexture());
+    mediaplayer->setVideoSurfaceTexture(videoSurface->getSurface()->getIGraphicBufferProducer());
 
     ALOGI("prepare...");
     status_t retCode = mediaplayer->prepare();
