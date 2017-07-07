@@ -31,6 +31,7 @@
 #include <gui/SurfaceComposerClient.h>
 #include <gui/Surface.h>
 #include <gui/ISurfaceComposer.h>
+#include <ui/DisplayInfo.h>
 
 using namespace android;
 
@@ -55,9 +56,15 @@ int main(int argc, char** argv)
     int nState = 0;
     sp<SurfaceComposerClient> videoClient = new SurfaceComposerClient;
 
-    ALOGI("create video surface");
+    sp<IBinder> display(SurfaceComposerClient::getBuiltInDisplay(
+                ISurfaceComposer::eDisplayIdMain));
+    DisplayInfo info;
+    SurfaceComposerClient::getDisplayInfo(display, &info);
+    ssize_t displayWidth = info.w;
+    ssize_t displayHeight = info.h;
+    ALOGI("create video surface %d x %d", displayWidth, displayHeight);
     sp<SurfaceControl> videoSurface(videoClient->createSurface(String8("video"),
-            480, 320,
+            displayWidth, displayHeight,
             PIXEL_FORMAT_OPAQUE));
     videoClient->openGlobalTransaction();
     nState = videoSurface->setLayer(INT_MAX);
